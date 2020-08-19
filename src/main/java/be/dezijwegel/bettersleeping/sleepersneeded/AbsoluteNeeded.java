@@ -10,7 +10,7 @@ public class AbsoluteNeeded implements SleepersNeededCalculator {
 
     public AbsoluteNeeded(int numNeeded)
     {
-        this.numNeeded = numNeeded;
+        this.numNeeded = Math.abs(numNeeded);
     }
 
     /**
