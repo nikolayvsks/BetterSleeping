@@ -6,8 +6,10 @@ import be.dezijwegel.bettersleeping.messaging.Messenger;
 import be.dezijwegel.bettersleeping.messaging.MsgEntry;
 import be.dezijwegel.bettersleeping.sleepersneeded.AbsoluteNeeded;
 import be.dezijwegel.bettersleeping.timechange.TimeChanger;
+import be.dezijwegel.bettersleeping.util.CustomTickHandler;
 import be.dezijwegel.bettersleeping.util.Debugger;
 import be.dezijwegel.bettersleeping.util.SleepStatus;
+import be.dezijwegel.bettersleeping.util.WorldInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -19,12 +21,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SleepersRunnable extends BukkitRunnable {
+
     // Final data
     private final World world;
     private final Set<UUID> sleepers;
     private final HashMap<UUID, Long> bedLeaveTracker;
 
     // Utility
+    private final CustomTickHandler customTickHandler;
     private final SleepersNeededCalculator sleepersCalculator;
     private final TimeChanger timeChanger;
     private final Messenger messenger;
@@ -41,6 +45,7 @@ public class SleepersRunnable extends BukkitRunnable {
      */
     public SleepersRunnable(World world, Messenger messenger, TimeChanger timeChanger, SleepersNeededCalculator sleepersCalculator) {
         this.world = world;
+        this.customTickHandler = new CustomTickHandler( world );
         this.messenger = messenger;
         this.oldTime = world.getTime();
         this.timeChanger = timeChanger;
@@ -97,6 +102,26 @@ public class SleepersRunnable extends BukkitRunnable {
                 new MsgEntry("<remaining_sleeping>", "" + remaining)
             );
         }
+    }
+
+    /**
+     * Set the duration of days in this world (in minutes)
+     *
+     * @param duration how many minutes are in each minecraft day
+     */
+    public void setDayDuration(long duration)
+    {
+        customTickHandler.setDayDuration( duration );
+    }
+
+    /**
+     * Set the duration of nights in this world (in minutes)
+     *
+     * @param duration how many minutes are in each minecraft night
+     */
+    public void setNightDuration(long duration)
+    {
+        customTickHandler.setNightDuration( duration );
     }
 
     public SleepStatus getSleepStatus() {
@@ -163,6 +188,9 @@ public class SleepersRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
+
+        // Make the time pas at a configurable speed
+        this.customTickHandler.handleCustomTick();
 
         // Time check subsystem: detect time set to day
         long currentTime = this.world.getTime();

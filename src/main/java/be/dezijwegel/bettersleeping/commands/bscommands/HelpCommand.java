@@ -49,17 +49,17 @@ public class HelpCommand extends BsCommand {
             BsCommand cmd = commands.get( cmdName );
             if (commandSender.hasPermission( cmd.getPermission() ))
             {
-                commandSender.sendMessage(ChatColor.DARK_AQUA + "Showing help for: /bs " + cmdName);
+                commandSender.sendMessage(ChatColor.DARK_AQUA + "Showing help for: /bs3 " + cmdName);
                 sendCommandInfo(commandSender, cmdName, cmd);
             }
             else
             {
-                commandSender.sendMessage(ChatColor.RED + "You do not have access to execute this command: /bs " + cmdName);
+                commandSender.sendMessage(ChatColor.RED + "You do not have access to execute this command: /bs3 " + cmdName);
             }
         }
         else
         {
-            commandSender.sendMessage(ChatColor.RED + "The command '/bs " + arguments[1] + "' was not found. Execute /bs help to see a list of commands");
+            commandSender.sendMessage(ChatColor.RED + "The command '/bs3 " + arguments[1] + "' was not found. Execute /bs3 help to see a list of commands");
         }
 
         return true;
@@ -69,12 +69,12 @@ public class HelpCommand extends BsCommand {
     /**
      * Send command info on a particular command
      * @param commandSender the receiver for the help message
-     * @param commandName the name of this command, as follows: /bs <commandName>
+     * @param commandName the name of this command, as follows: /bs3 <commandName>
      * @param command a BsCommand instance
      */
     private void sendCommandInfo(CommandSender commandSender, String commandName, BsCommand command)
     {
-        commandSender.sendMessage(ChatColor.GOLD + "Command: " + ChatColor.DARK_AQUA + "/bs " + commandName);
+        commandSender.sendMessage(ChatColor.GOLD + "Command: " + ChatColor.DARK_AQUA + "/bs3 " + commandName);
         commandSender.sendMessage(ChatColor.GOLD + "Description: " + ChatColor.DARK_AQUA + command.getDescription());
         if (commandSender.hasPermission("bettersleeping.help.admin"))
             commandSender.sendMessage(ChatColor.GOLD + "Permission: " + ChatColor.DARK_AQUA + command.getPermission());

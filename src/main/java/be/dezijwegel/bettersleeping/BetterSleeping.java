@@ -220,7 +220,8 @@ public class BetterSleeping extends JavaPlugin implements Reloadable {
         FileConfiguration sleepConfig = sleeping.getConfiguration();
 
         int numWorlds = 0;      // The amount of detected worlds
-        Map<World, SleepersRunnable> runnables = new HashMap<>();
+        Map<World, SleepersRunnable> worldRunnables = new HashMap<>();
+        Map<String, SleepersRunnable> worldNameRunnables = new HashMap<>();
         Set<String> disabledWorlds = new HashSet<String> (sleepConfig.getStringList("disabled_worlds") );
         for (World world : Bukkit.getWorlds())
         {
@@ -242,7 +243,8 @@ public class BetterSleeping extends JavaPlugin implements Reloadable {
                         timeChanger = new TimeSetter(world, sleepDelay);
                     }
                     SleepersRunnable runnable = new SleepersRunnable(world, messenger, timeChanger, calculator);
-                    runnables.put(world, runnable);
+                    worldRunnables.put( world, runnable );
+                    worldNameRunnables.put( world.getName(), runnable );
                     numWorlds++;
                 } else {
                     logger.log("Not enabling BetterSleeping in world '" + world.getName() + "'");
@@ -259,7 +261,7 @@ public class BetterSleeping extends JavaPlugin implements Reloadable {
         getServer().getPluginManager().registerEvents(buffsHandler, this);
 
         // Register bed event handler
-        bedEventHandler = new BedEventHandler(this, messenger, bypassChecker, essentialsHook, sleepConfig.getInt("bed_enter_delay"), runnables);
+        bedEventHandler = new BedEventHandler(this, messenger, bypassChecker, essentialsHook, sleepConfig.getInt("bed_enter_delay"), worldRunnables);
         getServer().getPluginManager().registerEvents(bedEventHandler, this);
 
         logger.log("The message below is always shown, even if collecting data is disabled: ");
@@ -281,7 +283,7 @@ public class BetterSleeping extends JavaPlugin implements Reloadable {
                             sleepConfig.getInt("percentage.needed"), sleepConfig.getInt("absolute.needed"),
                             bypassChecker, fileConfig.getBoolean("shorten_prefix"), buffsHandler, isMultiWorldServer);
 
-        this.getCommand("bettersleeping").setExecutor(new CommandHandler(this, messenger, buffsHandler, bypassChecker));
+        this.getCommand("bettersleeping").setExecutor(new CommandHandler(this, messenger, buffsHandler, bypassChecker, worldNameRunnables));
     }
 
 

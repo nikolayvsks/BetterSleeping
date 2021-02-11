@@ -6,6 +6,7 @@ import be.dezijwegel.bettersleeping.events.handlers.BuffsHandler;
 import be.dezijwegel.bettersleeping.messaging.Messenger;
 import be.dezijwegel.bettersleeping.messaging.MsgEntry;
 import be.dezijwegel.bettersleeping.permissions.BypassChecker;
+import be.dezijwegel.bettersleeping.runnables.SleepersRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +28,7 @@ public class CommandHandler implements CommandExecutor {
 
     private final Map<String, String> shortcuts;
 
-    public CommandHandler(BetterSleeping plugin, Messenger messenger, BuffsHandler buffsHandler, BypassChecker bypassChecker)
+    public CommandHandler(BetterSleeping plugin, Messenger messenger, BuffsHandler buffsHandler, BypassChecker bypassChecker, Map<String, SleepersRunnable> worldRunnables)
     {
         this.messenger = messenger;
 
@@ -39,12 +40,14 @@ public class CommandHandler implements CommandExecutor {
         BsCommand reload    = new ReloadCommand(plugin, messenger);
         BsCommand status    = new StatusCommand(messenger, plugin.getBedEventHandler());
         BsCommand buffs     = new BuffsCommand(messenger, buffsHandler, bypassChecker);
+        BsCommand duration  = new DurationCommand(messenger, worldRunnables);
 
         playerCommands.put("version",   version );
         playerCommands.put("help"   ,   help    );
         playerCommands.put("reload" ,   reload  );
         playerCommands.put("status" ,   status  );
         playerCommands.put("buffs"  ,   buffs   );
+        playerCommands.put("duration",  duration);
 
         consoleCommands.put("version",  version );
         consoleCommands.put("help",     help    );
@@ -56,6 +59,7 @@ public class CommandHandler implements CommandExecutor {
         shortcuts.put("r", "reload");
         shortcuts.put("s", "status");
         shortcuts.put("b", "buffs");
+        shortcuts.put("d", "duration");
 
         plugin.getCommand("bettersleeping").setTabCompleter(new TabCompleter(playerCommands, consoleCommands));
     }
