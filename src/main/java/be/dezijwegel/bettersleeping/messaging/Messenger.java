@@ -90,7 +90,7 @@ public class Messenger {
         }
 
         // Get the prefix and put it before the message
-        String prefix = doShortenPrefix ? "&6[BS3] &3" : "&6[BetterSleeping] &3";
+        String prefix = doShortenPrefix ? "&8[&9Сервер&8] " : "&8[&9Сервер&8] ";
         message = prefix + message;
 
         // Perform final replacements for color
